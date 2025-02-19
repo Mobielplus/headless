@@ -20,6 +20,12 @@
   overflow-x: scroll;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categories-container::-webkit-scrollbar {
+  display: none;
 }
 
 .category-card {
@@ -34,15 +40,7 @@
   border-radius: 0.8rem;
   border: 1px solid var(--light-grey);
   overflow: hidden;
-  transition: transform 0.4s ease;
-  will-change: transform;
   text-decoration: none; /* Added to remove link underline */
-}
-
-@media (hover: hover) {
-  .category-card:hover {
-    transform: translateY(-5px);
-  }
 }
 
 .category-image {
