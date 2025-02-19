@@ -1,6 +1,72 @@
 // app/components/Header/Header.tsx
 import { Link } from "@remix-run/react";
+import { useState, useEffect } from "react";
 import styles from "./Header.css?url";
+
+const INFO_ITEMS = [
+  {
+    icon: <i className="Truck-icon"></i>,
+    text: "Gratis verzending"
+  },
+  {
+    icon: (
+      <div className="stars">
+        <i className="Star-icon"></i>
+        <i className="Star-icon"></i>
+        <i className="Star-icon"></i>
+        <i className="Star-icon"></i>
+        <i className="Star-icon"></i>
+      </div>
+    ),
+    text: "4.9 klantbeoordelingen"
+  },
+  {
+    icon: <img src="/Icons/tweakers.svg" alt="" aria-hidden="true" width="18" height="18" />,
+    text: "Tweakers Pricewatch"
+  },
+  {
+    icon: <img src="/Icons/thuiswinkel.svg" alt="" aria-hidden="true" width="18" height="18" />,
+    text: "Thuiswinkel Waarborg"
+  }
+];
+
+// InfoBar Component - handles both desktop and mobile views
+const InfoBar = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % INFO_ITEMS.length);
+    }, 3000);
+    
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  return (
+    <div className="info-bar">
+      <div className="info-container">
+        <div 
+          className="info-items"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {INFO_ITEMS.map((item, index) => (
+            <div 
+              key={index}
+              className={`info-item ${index === currentIndex ? 'active' : ''}`}
+            >
+              {item.icon}
+              <span>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const links = () => [{ rel: "stylesheet", href: styles }];
 
@@ -11,10 +77,15 @@ export function Header() {
         <div className="header-main">
           <div className="top-nav-container">
             <nav className="main-navigation" aria-label="Main navigation">
-              {/* Logo */}
-              <Link to="/" className="logo" aria-label="MobielPlus homepage">
-                <img src="/Logo/Logo.svg" alt="MobielPlus logo" width="150" height="40" />
-              </Link>
+              {/* Logo and Menu Container */}
+              <div className="logo-menu-container">
+                <button className="mobile-menu-button" aria-label="Open menu">
+                  <i className="Menu-icon"></i>
+                </button>
+                <Link to="/" className="logo" aria-label="MobielPlus homepage">
+                  <img src="/Logo/Logo.svg" alt="MobielPlus logo" width="150" height="40" />
+                </Link>
+              </div>
 
               {/* Search Form */}
               <form role="search" className="search-form" aria-label="Site search">
@@ -73,40 +144,8 @@ export function Header() {
         </div>
       </header>
 
-      {/* Info Bar */}
-      <div className="info-bar">
-        <div className="info-container">
-          {/* Free Shipping */}
-          <div className="info-item">
-            <i className="Truck-icon"></i>
-            <span>Gratis verzending</span>
-          </div>
-
-          {/* Customer Rating */}
-          <div className="info-item">
-            <div className="stars">
-              <i className="Star-icon"></i>
-              <i className="Star-icon"></i>
-              <i className="Star-icon"></i>
-              <i className="Star-icon"></i>
-              <i className="Star-icon"></i>
-            </div>
-            <span>4.9 klantbeoordelingen</span>
-          </div>
-
-          {/* Price Watch */}
-          <div className="info-item">
-            <img src="/Icons/tweakers.svg" alt="" aria-hidden="true" width="18" height="18" />
-            <span>Tweakers Pricewatch</span>
-          </div>
-
-          {/* Warranty */}
-          <div className="info-item">
-            <img src="/Icons/thuiswinkel.svg" alt="" aria-hidden="true" width="18" height="18" />
-            <span>Thuiswinkel Waarborg</span>
-          </div>
-        </div>
-      </div>
+      {/* Unified InfoBar Component */}
+      <InfoBar />
     </>
   );
 }

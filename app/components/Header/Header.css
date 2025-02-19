@@ -1,5 +1,8 @@
 /* header.css */
 .site-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -19,7 +22,7 @@
 .top-nav-container {
     width: 100%;
     max-width: 1120px;
-    padding: 1rem 0;
+    padding: 1rem;
 }
 
 .main-navigation {
@@ -32,11 +35,25 @@
 /* Logo */
 .logo {
     flex-shrink: 0;
+    display: flex;
 }
 
 .logo img {
     height: 25px;
     width: auto;
+}
+
+.logo-menu-container {
+    display: flex;
+}
+
+/* Mobile Menu Button - hidden by default */
+.mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
 }
 
 /* Search Form */
@@ -76,6 +93,7 @@
     background-color: var(--primary-blue);
     display: flex;
     justify-content: center;
+    padding: 0 1rem;
 }
 
 .category-navigation ul {
@@ -142,10 +160,14 @@
 .info-container {
     width: 100%;
     max-width: 1120px;
+    padding: 10px 1rem;
+}
+
+.info-items {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
+    position: relative;
+    min-height: 16px;
 }
 
 .info-item {
@@ -157,6 +179,8 @@
 
 .info-item .stars {
     color: #FFAE00;
+    display: flex;
+    gap: 2px;
 }
 
 /* Icon Styles */
@@ -188,8 +212,98 @@
 .Account-icon,
 .Cart-icon,
 .Search-icon,
-.Stars-icon {
+.Stars-icon,
+.Menu-icon {
     font-size: 1.2rem;
     display: inline-block;
     vertical-align: middle;
+}
+
+/* Desktop Info Bar Styles */
+@media (min-width: 851px) {
+    .info-items {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+    
+    .info-item {
+        opacity: 1;
+        transform: none;
+        position: relative;
+        width: auto;
+        transition: none;
+    }
+}
+
+/* Mobile Info Bar Styles */
+@media (max-width: 850px) {
+    .info-items {
+        display: block;
+        text-align: center;
+    }
+
+    .info-item {
+        position: absolute;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        flex-shrink: 0;
+        white-space: nowrap;
+        /* Add these properties for centering */
+        justify-content: center;
+        left: 0;
+        right: 0;
+    }
+
+    .info-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Center the icon and text within the info item */
+    .info-item > * {
+        margin: 0;
+    }
+}
+
+/* General Mobile Responsive Styles */
+@media (max-width: 1000px) {
+    .top-nav-container {
+        padding: 1rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .main-navigation {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .mobile-menu-button {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-form {
+        order: 3;
+        width: 100%;
+    }
+
+    .user-controls {
+        gap: 1rem;
+    }
+
+    .language-selector {
+        display: none;
+    }
+
+    .category-navigation {
+        display: none;
+    }
+
+    .search-input {
+        padding: 0.6rem 1rem;
+        padding-right: 2.5rem;
+    }
 }
