@@ -1,0 +1,58 @@
+/* app/components/CategoryCard/CategoryCard.css */
+.categories-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.categories-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 1120px;
+}
+
+.categories-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.category-card {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--light-grey-secondary);
+  border-radius: 0.8rem;
+  border: 1px solid var(--light-grey);
+  overflow: hidden;
+  transition: transform 0.4s ease;
+  will-change: transform;
+  text-decoration: none; /* Added to remove link underline */
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+}
+
+.category-image {
+  width: 100%;
+  padding: 20px 50px;
+}
+
+.category-content {
+  background-color: #fff;
+  padding: 15px;
+  width: 100%;
+}
+
+.category-title {
+  text-align: center;
+  font-size: 0.75rem; 
+  font-weight: 500;
+  color: var(--font-color-primary);
+}
+

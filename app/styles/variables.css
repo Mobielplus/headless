@@ -1,0 +1,11 @@
+/* app/styles/variables.css */
+:root {
+    --primary-blue: #0077FF;
+    --primary-blue-light: #bfdbfe;
+    --primary-blue-dark: #0061cc;
+    --light-grey: #E2E2E2;
+    --light-grey-secondary: #F5F5F5;
+    --font-color-primary: #515151;
+    --font-color-secondary: #fff;
+    --font-primary: 'Montserrat', sans-serif;
+}
