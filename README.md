@@ -1,40 +1,71 @@
-# Welcome to Remix!
+# MobielPlus Headless E-commerce
 
-- 📖 [Remix docs](https://remix.run/docs)
+A modern headless e-commerce solution built with Remix and WordPress, designed for MobielPlus's product catalog and shopping experience.
+
+## Features
+
+- 🛍️ Product category browsing
+- 🔍 Product search functionality
+- 🌐 Multi-language support (NL/BE)
+- 📱 Responsive design
+- ⚡ Fast loading times
+- 🔄 Real-time WordPress integration
+
+## Technology Stack
+
+- [Remix](https://remix.run/) - React-based web framework
+- [WordPress](https://wordpress.org/) with GraphQL - Headless CMS
+- Custom CSS with CSS Variables
+- Modern Icon System
 
 ## Development
 
-Run the dev server:
+To run the development server:
 
-```shellscript
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-## Deployment
+The app will be available at `http://localhost:3000`.
 
-First, build your app for production:
+## Build and Deployment
 
-```sh
+To build for production:
+
+```bash
+# Production build
 npm run build
-```
 
-Then run the app in production mode:
-
-```sh
+# Start production server
 npm start
 ```
 
-Now you'll need to pick a host to deploy it to.
+## Project Structure
 
-### DIY
+```
+app/
+├── components/         # Reusable UI components
+├── lib/               # Utilities and GraphQL queries
+├── routes/            # Application routes
+└── styles/            # Global styles and variables
+```
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+## WordPress Integration
 
-Make sure to deploy the output of `npm run build`
+The application connects to WordPress via GraphQL API at `mobielplus.com/headless/graphql`. Make sure the WordPress instance has WPGraphQL plugin installed and configured.
 
-- `build/server`
-- `build/client`
+## Contributing
 
-## Styling
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+## License
+
+This project is proprietary and confidential. © MobielPlus.
