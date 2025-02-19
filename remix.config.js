@@ -3,6 +3,9 @@ module.exports = {
   serverDependenciesToBundle: ["graphql-request"],
   ignoredRouteFiles: ["**/.*"],
   serverModuleFormat: "cjs",
+  // Add basePath configuration for /headless subdirectory
+  publicPath: "/headless/build/",
+  basePath: "/headless",
   future: {
     v2_meta: true,
     v2_errorBoundary: true,

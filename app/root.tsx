@@ -1,5 +1,4 @@
-// app/root.tsx
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -13,6 +12,20 @@ import { Header, links as headerLinks } from "~/components/Header/Header";
 import globalStyles from "./styles/global.css?url";
 import variables from "./styles/variables.css?url";
 import icons from "./styles/icons.css?url";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "MobielPlus | Specialist in Telefoon Accessoires - Apple & Samsung" },
+    {
+      name: "description",
+      content: "MobielPlus, dé specialist in telefoon accessoires voor Apple en Samsung. Ontdek ons uitgebreide assortiment hoesjes, opladers, screenprotectors en meer. Originele producten met snelle levering in Nederland.",
+    },
+    { name: "keywords", content: "telefoon accessoires, Apple accessoires, Samsung accessoires, hoesjes, opladers, screenprotectors, MobielPlus" },
+    { property: "og:title", content: "MobielPlus | Specialist in Telefoon Accessoires - Apple & Samsung" },
+    { property: "og:description", content: "Specialist in telefoon accessoires voor Apple en Samsung. Uitgebreid assortiment aan originele accessoires met snelle levering." },
+    { name: "language", content: "nl" }
+  ];
+};
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: globalStyles },
@@ -33,7 +46,7 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="nl">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
