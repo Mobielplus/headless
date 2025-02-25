@@ -17,6 +17,7 @@
 .Search-icon,
 .Stars-icon,
 .Star-icon,
+.Burger-menu-icon,
 .Truck-icon {
   font-family: 'Mobielplus' !important;
   font-style: normal;
@@ -32,17 +33,20 @@
   content: "\e900";
 }
 .Cart-icon::before {
-  content: "\e901";
-}
-.Search-icon::before {
   content: "\e902";
 }
-.Stars-icon::before {
+.Search-icon::before {
   content: "\e903";
+}
+.Stars-icon::before {
+  content: "\e905";
 }
 .Star-icon::before {
   content: "\e904";
 }
 .Truck-icon::before {
-  content: "\e905";
+  content: "\e906";
+}
+.Burger-menu-icon::before {
+  content: "\e901";
 }

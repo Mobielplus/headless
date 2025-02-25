@@ -80,7 +80,7 @@ export function Header() {
               {/* Logo and Menu Container */}
               <div className="logo-menu-container">
                 <button className="mobile-menu-button" aria-label="Open menu">
-                  <i className="Menu-icon"></i>
+                  <i className="Burger-menu-icon"></i>
                 </button>
                 <Link to="/" className="logo" aria-label="MobielPlus homepage">
                   <img src="/Logo/Logo.svg" alt="MobielPlus logo" width="150" height="40" />

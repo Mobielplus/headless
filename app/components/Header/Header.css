@@ -36,6 +36,7 @@
 .logo {
     flex-shrink: 0;
     display: flex;
+    align-items: center;
 }
 
 .logo img {
@@ -45,6 +46,7 @@
 
 .logo-menu-container {
     display: flex;
+    gap: 0.5rem;
 }
 
 /* Mobile Menu Button - hidden by default */
@@ -52,7 +54,6 @@
     display: none;
     background: none;
     border: none;
-    padding: 0.5rem;
     cursor: pointer;
 }
 
@@ -272,7 +273,7 @@
 @media (max-width: 1000px) {
     .top-nav-container {
         padding: 1rem;
-        padding-bottom: 0.5rem;
+        padding-bottom: 0;
     }
 
     .main-navigation {
