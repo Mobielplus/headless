@@ -13,6 +13,8 @@ import { useIOSZoomPrevention } from "~/hooks/useIOSZoomPrevention";
 import globalStyles from "./styles/global.css?url";
 import variables from "./styles/variables.css?url";
 import icons from "./styles/icons.css?url";
+// Import custom fonts CSS
+import fontStyles from "./styles/fonts.css?url";
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,17 +34,9 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: globalStyles },
   { rel: "stylesheet", href: variables },
   { rel: "stylesheet", href: icons },
+  { rel: "stylesheet", href: fontStyles }, // Add your custom font styles
   ...headerLinks(), // Load styles specific to Header
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap",
-  },
+  // Remove Google Fonts links
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
