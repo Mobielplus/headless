@@ -12,13 +12,28 @@ export const action: ActionFunction = async ({ request }) => {
     const rawBody = await request.text();
     console.log("Raw webhook body (first 200 chars):", rawBody.substring(0, 200));
     
-    // Try to parse as JSON
+    // Try to parse based on content type
     let payload;
-    try {
-      payload = JSON.parse(rawBody);
-      console.log("Parsed JSON payload:", JSON.stringify(payload, null, 2));
-    } catch (e) {
-      console.log("Body is not valid JSON:", e);
+    const contentType = request.headers.get('content-type') || '';
+
+    if (contentType.includes('application/json')) {
+      try {
+        payload = JSON.parse(rawBody);
+        console.log("Parsed JSON payload:", JSON.stringify(payload, null, 2));
+      } catch (e) {
+        console.log("Body is not valid JSON:", e);
+      }
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      try {
+        // Parse form data
+        const formData = new URLSearchParams(rawBody);
+        payload = Object.fromEntries(formData.entries());
+        console.log("Parsed form data:", JSON.stringify(payload, null, 2));
+      } catch (e) {
+        console.log("Failed to parse form data:", e);
+      }
+    } else {
+      console.log("Unhandled content type:", contentType);
     }
     
     // Always return success so WooCommerce doesn't retry
@@ -28,6 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
       received: {
         headers,
         bodyPreview: rawBody.substring(0, 100) + "...",
+        payload
       }
     });
   } catch (error) {
@@ -52,4 +68,4 @@ export const loader: LoaderFunction = async ({ request }) => {
       headers: Object.fromEntries(request.headers.entries())
     }
   });
-};
+};           
