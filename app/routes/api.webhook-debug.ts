@@ -1,6 +1,7 @@
-// app/routes/api.webhook-debug.ts
-import { ActionFunction, json } from "@remix-run/node";
+// app/routes/api/webhook-debug.ts
+import { ActionFunction, LoaderFunction, json } from "@remix-run/node";
 
+// Handle POST requests (for webhooks)
 export const action: ActionFunction = async ({ request }) => {
   try {
     // Log all headers
@@ -38,4 +39,17 @@ export const action: ActionFunction = async ({ request }) => {
       error: String(error)
     });
   }
+};
+
+// Add this to handle GET requests (for browser testing)
+export const loader: LoaderFunction = async ({ request }) => {
+  return json({
+    message: "Webhook debug endpoint is working",
+    instructions: "This endpoint is for POST requests from WooCommerce webhooks",
+    requestInfo: {
+      method: request.method,
+      url: request.url,
+      headers: Object.fromEntries(request.headers.entries())
+    }
+  });
 };
