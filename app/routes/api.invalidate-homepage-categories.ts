@@ -1,7 +1,7 @@
 // app/routes/api.invalidate-homepage-categories.ts
 import { ActionFunction, json } from "@remix-run/node";
 import { invalidateHomepageCategories } from "~/lib/graphql";
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 export const action: ActionFunction = async ({ request }) => {
   try {
@@ -9,7 +9,7 @@ export const action: ActionFunction = async ({ request }) => {
     const rawBody = await request.text();
     
     // Get the signature from headers
-    const signature = request.headers.get("X-WC-Webhook-Signature");
+    const signature = request.headers.get("x-wc-webhook-signature");
     const SECRET_KEY = process.env.HOMEPAGE_WEBHOOK_SECRET;
     
     if (!signature || !SECRET_KEY) {
@@ -23,13 +23,12 @@ export const action: ActionFunction = async ({ request }) => {
       .update(rawBody)
       .digest('base64');
     
-    // Compare signatures (constant-time comparison to prevent timing attacks)
-    const isValid = crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+    // Log signatures for debugging (remove in production)
+    console.log("Received signature:", signature);
+    console.log("Calculated signature:", expectedSignature);
     
-    if (!isValid) {
+    // Compare signatures
+    if (signature !== expectedSignature) {
       console.error("Invalid signature");
       return json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -40,6 +39,11 @@ export const action: ActionFunction = async ({ request }) => {
     // Parse the request body as JSON (need to re-parse since we already consumed it)
     const payload = JSON.parse(rawBody);
     
+    // Log webhook details
+    console.log("Webhook event:", request.headers.get("x-wc-webhook-event"));
+    console.log("Webhook resource:", request.headers.get("x-wc-webhook-resource"));
+    console.log("Webhook topic:", request.headers.get("x-wc-webhook-topic"));
+    
     // Invalidate the cache
     await invalidateHomepageCategories();
     console.log("Invalidated homepage categories cache");
@@ -47,6 +51,11 @@ export const action: ActionFunction = async ({ request }) => {
     return json({ success: true });
   } catch (error) {
     console.error("Webhook handler error:", error);
-    return json({ error: "Failed to process webhook" }, { status: 500 });
+    // Always return 200 so WooCommerce doesn't retry
+    return json({ 
+      status: "error", 
+      message: "Error in webhook handler",
+      error: String(error)
+    }, { status: 200 });
   }
 };
