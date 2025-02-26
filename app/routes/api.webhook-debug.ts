@@ -1,5 +1,35 @@
 // app/routes/api/webhook-debug.ts
 import { ActionFunction, LoaderFunction, json } from "@remix-run/node";
+import * as crypto from 'crypto';
+
+// Function to verify WooCommerce webhook signature
+function verifyWebhookSignature(
+  rawBody: string, 
+  signature: string | null, 
+  secret: string
+): boolean {
+  if (!signature) {
+    console.log("No signature provided in request headers");
+    return false;
+  }
+  
+  try {
+    // Create HMAC-SHA256 hash using the secret
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(rawBody);
+    const calculatedSignature = hmac.digest('base64');
+    
+    // Log signatures for debugging (remove in production)
+    console.log("Received signature:", signature);
+    console.log("Calculated signature:", calculatedSignature);
+    
+    // Compare calculated signature with received signature
+    return calculatedSignature === signature;
+  } catch (error) {
+    console.error("Error verifying signature:", error);
+    return false;
+  }
+}
 
 // Handle POST requests (for webhooks)
 export const action: ActionFunction = async ({ request }) => {
@@ -11,6 +41,12 @@ export const action: ActionFunction = async ({ request }) => {
     // Get the raw body
     const rawBody = await request.text();
     console.log("Raw webhook body (first 200 chars):", rawBody.substring(0, 200));
+    
+    // Get webhook signature and verify it
+    const secret = "your-secret-homepage"; // Your WooCommerce webhook secret
+    const signature = request.headers.get('x-wc-webhook-signature');
+    const isSignatureValid = verifyWebhookSignature(rawBody, signature, secret);
+    console.log("Webhook signature valid:", isSignatureValid);
     
     // Try to parse based on content type
     let payload;
@@ -43,7 +79,8 @@ export const action: ActionFunction = async ({ request }) => {
       received: {
         headers,
         bodyPreview: rawBody.substring(0, 100) + "...",
-        payload
+        payload,
+        signatureValid: isSignatureValid
       }
     });
   } catch (error) {
@@ -68,4 +105,4 @@ export const loader: LoaderFunction = async ({ request }) => {
       headers: Object.fromEntries(request.headers.entries())
     }
   });
-};           
+};
