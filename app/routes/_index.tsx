@@ -13,7 +13,19 @@ interface LoaderData {
 export const loader: LoaderFunction = async () => {
   try {
     const categories = await getHomepageCategories();
-    return json<LoaderData>({ categories });
+    
+    return json<LoaderData>(
+      { categories },
+      {
+        headers: {
+          // ISR-like pattern:
+          // - Cache for 1 hour (s-maxage)
+          // - Allow serving stale content while revalidating in background
+          // - Store in shared cache (CDN)
+          "Cache-Control": "s-maxage=3600, stale-while-revalidate, public"
+        }
+      }
+    );
   } catch (error) {
     return json<LoaderData>({ categories: [] });
   }
