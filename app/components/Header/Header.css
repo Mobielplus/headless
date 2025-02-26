@@ -10,22 +10,27 @@
     background-color: #fff;
 }
 
-.header-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
+.header-container {
     width: 100%;
 }
 
-/* Top Navigation */
-.top-nav-container {
-    width: 100%;
-    max-width: 1120px;
+.main-container {
     padding: 1rem;
 }
 
+.categories-menu-container {
+    background-color: var(--primary-blue);
+}
+
+.info-bar-container {
+    border-bottom: 1px solid var(--light-grey);
+    padding: 0.7rem 1rem;
+}
+
 .main-navigation {
+    width: 100%;
+    max-width: 1120px;
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -46,7 +51,7 @@
 
 .logo-menu-container {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 /* Mobile Menu Button - hidden by default */
@@ -91,9 +96,6 @@
 /* Category Navigation */
 .category-navigation {
     width: 100%;
-    background-color: var(--primary-blue);
-    display: flex;
-    justify-content: center;
     padding: 0 1rem;
 }
 
@@ -105,7 +107,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0;
+    margin: auto;
     padding: 0;
 }
 
@@ -154,14 +156,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    border-bottom: 1px solid var(--light-grey);
     background-color: #fff;
 }
 
 .info-container {
     width: 100%;
     max-width: 1120px;
-    padding: 10px 1rem;
 }
 
 .info-items {
@@ -194,7 +194,7 @@
     padding: 0;
     height: 1.5rem;
     cursor: pointer;
-    color: #64748b;
+    color: var(--font-color-primary);
     text-decoration: none;
     border: none;
     outline: none;
@@ -215,7 +215,7 @@
 .Search-icon,
 .Stars-icon,
 .Menu-icon {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     display: inline-block;
     vertical-align: middle;
 }
@@ -267,15 +267,14 @@
     .info-item > * {
         margin: 0;
     }
+
+    .main-container {
+        padding-bottom: 0rem;
+    }
 }
 
 /* General Mobile Responsive Styles */
 @media (max-width: 1000px) {
-    .top-nav-container {
-        padding: 1rem;
-        padding-bottom: 0;
-    }
-
     .main-navigation {
         flex-wrap: wrap;
         gap: 1rem;
@@ -286,9 +285,9 @@
         align-items: center;
     }
 
-    .search-form {
-        order: 3;
-        width: 100%;
+    .mobile-menu-button i{
+        font-size: 1rem;
+        color: var(--font-color-primary);
     }
 
     .user-controls {
@@ -303,8 +302,53 @@
         display: none;
     }
 
+    .search-form {
+        order: 3;
+        width: 100%;
+        display: flex;
+    }
+    
     .search-input {
-        padding: 0.6rem 1rem;
-        padding-right: 2.5rem;
+        font-size: 0.8rem;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+        border-color: var(--primary-blue); 
+    }
+    
+    .search-form button {
+        position: static;
+        transform: none;
+        background-color: var(--primary-blue);
+        color: white;
+        padding: 0 0.8rem;
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+        height: auto;
+    }
+    
+    .search-form button i {
+        color: white;
+        font-size: 1rem;
     }
 }
+
+/* Fix for iOS input background */
+.search-input {
+    /* Other existing styles */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #ffffff; /* Explicitly set background */
+}
+
+/* This specifically targets the autofill styling on iOS/Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: inherit !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+  

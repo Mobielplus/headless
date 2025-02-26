@@ -1,0 +1,140 @@
+/* HomepageBanner.css */
+.homepage-banner {
+  background-color: var(--primary-blue-light);
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.banner-title {
+  color: var(--font-color-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.banner-subtitle {
+  color: var(--font-color-primary);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.banner-button {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+}
+
+.banner-image img {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.banner-image {
+  max-width: 50%;
+}
+
+.banners-wrapper {
+  display: flex;
+  gap: 1rem;
+  max-width: 1120px;
+  margin: auto;
+}
+
+.banner-wrapper {
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.banner-title i {
+  font-size: 2rem;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.combodeal {
+  margin-bottom: -4rem;
+}
+
+@media (max-width: 1000px) {
+  .banners-wrapper {
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .banners-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .homepage-banner {
+    width: 100%;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 850px) {
+  .banner-content {
+    order: 2;
+  }
+
+  .homepage-banner {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+    border: 1px solid var(--light-grey);
+  }
+
+  .banner-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1.5rem;
+    background-color: white;
+  }
+  
+  .banner-image {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+
+  .banner-image img {
+    max-height: 30vh;
+  }
+
+  .banner-title {
+    font-size: 1rem;
+  }
+
+  .banner-title i{
+    font-size: 1.2rem;
+  }
+
+  .combodeal {
+    margin-bottom: 0;
+  }
+
+  .banner-combodeal {
+    padding-bottom: 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+  }
+}

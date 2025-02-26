@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { Header, links as headerLinks } from "~/components/Header/Header";
+import { useIOSZoomPrevention } from "~/hooks/useIOSZoomPrevention";
 
 // Import global styles
 import globalStyles from "./styles/global.css?url";
@@ -45,6 +46,8 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  useIOSZoomPrevention();
+
   return (
     <html lang="nl">
       <head>

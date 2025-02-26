@@ -72,80 +72,81 @@ export const links = () => [{ rel: "stylesheet", href: styles }];
 
 export function Header() {
   return (
-    <>
-      <header className="site-header" role="banner">
-        <div className="header-main">
-          <div className="top-nav-container">
-            <nav className="main-navigation" aria-label="Main navigation">
-              {/* Logo and Menu Container */}
-              <div className="logo-menu-container">
-                <button className="mobile-menu-button" aria-label="Open menu">
-                  <i className="Burger-menu-icon"></i>
-                </button>
-                <Link to="/" className="logo" aria-label="MobielPlus homepage">
-                  <img src="/Logo/Logo.svg" alt="MobielPlus logo" width="150" height="40" />
-                </Link>
-              </div>
-
-              {/* Search Form */}
-              <form role="search" className="search-form" aria-label="Site search">
-                <input
-                  type="search"
-                  placeholder="Waar ben je naar op zoek?"
-                  aria-label="Search products"
-                  className="search-input"
-                />
-                <button type="submit" aria-label="Submit search">
-                  <i className="Search-icon"></i>
-                </button>
-              </form>
-
-              {/* User Controls */}
-              <div className="user-controls">
-                <div className="language-selector">
-                  <button type="button" aria-label="Select language" aria-expanded="false">
-                    <img src="/Icons/nl-flag.svg" alt="" aria-hidden="true" />
-                    <span>NL</span>
-                  </button>
-                </div>
-
-                <Link to="/account" className="account-link" aria-label="Your account">
-                  <i className="Account-icon"></i>
-                </Link>
-
-                <Link to="/cart" className="cart-link" aria-label="Shopping cart">
-                  <i className="Cart-icon"></i>
-                </Link>
-              </div>
-            </nav>
+    <header className="site-header" role="banner">
+      {/* Container 1: Main Navigation */}
+      <div className="header-container main-container">
+        <nav className="main-navigation" aria-label="Main navigation">
+          {/* Logo and Menu Container */}
+          <div className="logo-menu-container">
+            <button className="mobile-menu-button" aria-label="Open menu">
+              <i className="Burger-menu-icon"></i>
+            </button>
+            <Link to="/" className="logo" aria-label="MobielPlus homepage">
+              <img src="/Logo/Logo.svg" alt="MobielPlus logo" width="150" height="40" />
+            </Link>
           </div>
 
-          {/* Category Navigation */}
-          <nav className="category-navigation" aria-label="Product categories">
-            <ul>
-              <li>
-                <Link to="/bestsellers" className="category-link">
-                  <span className="category-icon" aria-hidden="true">
-                    <i className="Stars-icon"></i>
-                  </span>
-                  Bestsellers
-                </Link>
-              </li>
-              <li><Link to="/opladers" className="category-link">Opladers</Link></li>
-              <li><Link to="/audio" className="category-link">Audio</Link></li>
-              <li><Link to="/hoesjes" className="category-link">Hoesjes</Link></li>
-              <li><Link to="/smartwatches" className="category-link">Smartwatches</Link></li>
-              <li><Link to="/trackers" className="category-link">Trackers</Link></li>
-              <li><Link to="/opslag" className="category-link">Opslag</Link></li>
-              <li><Link to="/pencils" className="category-link">Pencils</Link></li>
-              <li><Link to="/meer" className="category-link">Meer</Link></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+          {/* Search Form */}
+          <form role="search" className="search-form" aria-label="Site search">
+            <input
+              type="search"
+              placeholder="Waar ben je naar op zoek?"
+              aria-label="Search products"
+              className="search-input"
+            />
+            <button type="submit" aria-label="Submit search">
+              <i className="Search-icon"></i>
+            </button>
+          </form>
 
-      {/* Unified InfoBar Component */}
-      <InfoBar />
-    </>
+          {/* User Controls */}
+          <div className="user-controls">
+            <div className="language-selector">
+              <button type="button" aria-label="Select language" aria-expanded="false">
+                <img src="/Icons/nl-flag.svg" alt="" aria-hidden="true" />
+                <span>NL</span>
+              </button>
+            </div>
+
+            <Link to="/account" className="account-link" aria-label="Your account">
+              <i className="Account-icon"></i>
+            </Link>
+
+            <Link to="/cart" className="cart-link" aria-label="Shopping cart">
+              <i className="Cart-icon"></i>
+            </Link>
+          </div>
+        </nav>
+      </div>
+      
+      {/* Container 2: Category Navigation */}
+      <div className="header-container categories-menu-container">
+        <nav className="category-navigation" aria-label="Product categories">
+          <ul>
+            <li>
+              <Link to="/bestsellers" className="category-link">
+                <span className="category-icon" aria-hidden="true">
+                  <i className="Stars-icon"></i>
+                </span>
+                Bestsellers
+              </Link>
+            </li>
+            <li><Link to="/opladers" className="category-link">Opladers</Link></li>
+            <li><Link to="/audio" className="category-link">Audio</Link></li>
+            <li><Link to="/hoesjes" className="category-link">Hoesjes</Link></li>
+            <li><Link to="/smartwatches" className="category-link">Smartwatches</Link></li>
+            <li><Link to="/trackers" className="category-link">Trackers</Link></li>
+            <li><Link to="/opslag" className="category-link">Opslag</Link></li>
+            <li><Link to="/pencils" className="category-link">Pencils</Link></li>
+            <li><Link to="/meer" className="category-link">Meer</Link></li>
+          </ul>
+        </nav>
+      </div>
+      
+      {/* Container 3: InfoBar (now the last container) */}
+      <div className="header-container info-bar-container">
+        <InfoBar />
+      </div>
+    </header>
   );
 }
