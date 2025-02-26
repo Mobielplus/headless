@@ -12,6 +12,12 @@ import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 
+// Add environment variable logging
+console.log('Environment variables check on server startup:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('WORDPRESS_GRAPHQL_URL set:', Boolean(process.env.WORDPRESS_GRAPHQL_URL));
+console.log('REDIS_URL set:', Boolean(process.env.REDIS_URL));
+
 const ABORT_DELAY = 5_000;
 
 export default function handleRequest(

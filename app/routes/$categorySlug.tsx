@@ -11,10 +11,21 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
+  // Skip processing for favicon.ico and other browser resources
+  const categorySlug = params.categorySlug || "";
+  
+  // List of common browser resources to ignore
+  const ignoredResources = ["favicon.ico", "robots.txt", "sitemap.xml"];
+  
+  if (ignoredResources.includes(categorySlug)) {
+    return json<LoaderData>({ products: [] });
+  }
+  
   try {
-    const products = await getProductsByCategory(params.categorySlug || "");
+    const products = await getProductsByCategory(categorySlug);
     return json<LoaderData>({ products });
   } catch (error) {
+    console.error(`Error loading products for category ${categorySlug}:`, error);
     return json<LoaderData>({ products: [] });
   }
 };
@@ -26,6 +37,14 @@ export const links = () => [
 
 export default function CategoryPage() {
   const { products } = useLoaderData<LoaderData>();
+
+  if (products.length === 0) {
+    return (
+      <div className="products-wrapper">
+        <p>No products found in this category.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="products-wrapper">
