@@ -8,13 +8,14 @@ export const action: ActionFunction = async ({ request }) => {
     // Get raw body for signature verification
     const rawBody = await request.text();
     
-    // Get signatures and secret
-    const wcWebhookSignature = request.headers.get("x-wc-webhook-signature");
+    // Get webhook signature and secret
+    const signature = request.headers.get("x-wc-webhook-signature");
     const SECRET_KEY = process.env.WEBHOOK_SECRET;
     
-    if (!wcWebhookSignature || !SECRET_KEY) {
+    // Validate presence of signature and secret
+    if (!signature || !SECRET_KEY) {
       console.error("Missing signature or secret key", {
-        signaturePresent: !!wcWebhookSignature,
+        signaturePresent: !!signature,
         secretKeyPresent: !!SECRET_KEY
       });
       return json({ error: "Unauthorized" }, { status: 401 });
@@ -28,12 +29,15 @@ export const action: ActionFunction = async ({ request }) => {
     
     // Timing-safe comparison
     const signatureMatch = crypto.timingSafeEqual(
-      Buffer.from(wcWebhookSignature),
+      Buffer.from(signature),
       Buffer.from(expectedSignature)
     );
     
     if (!signatureMatch) {
-      console.error("Signature verification failed");
+      console.error("Signature verification failed", {
+        receivedSignature: signature,
+        expectedSignature
+      });
       return json({ error: "Unauthorized" }, { status: 401 });
     }
     
