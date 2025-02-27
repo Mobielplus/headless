@@ -14,6 +14,7 @@ export const action: ActionFunction = async ({ request }) => {
     
     if (!signature || !SECRET_KEY) {
       console.error("Missing signature or secret key");
+      console.error("Received headers:", JSON.stringify(Object.fromEntries([...request.headers.entries()]), null, 2));
       return json({ error: "Unauthorized" }, { status: 401 });
     }
     
@@ -23,32 +24,36 @@ export const action: ActionFunction = async ({ request }) => {
       .update(rawBody)
       .digest('base64');
     
-    // Log signatures for debugging (remove in production)
+    // Log signatures for debugging
     console.log("Received signature:", signature);
-    console.log("Calculated signature:", expectedSignature);
+    console.log("Expected signature:", expectedSignature);
     
     // Compare signatures
     if (signature !== expectedSignature) {
-      console.error("Invalid signature");
+      console.error("Invalid signature. Authentication failed.");
       return json({ error: "Unauthorized" }, { status: 401 });
     }
-    
-    // If we reach here, the signature is valid
-    console.log("Webhook authenticated successfully");
-    
-    // Parse the request body as JSON (need to re-parse since we already consumed it)
-    const payload = JSON.parse(rawBody);
     
     // Log webhook details
     console.log("Webhook event:", request.headers.get("x-wc-webhook-event"));
     console.log("Webhook resource:", request.headers.get("x-wc-webhook-resource"));
     console.log("Webhook topic:", request.headers.get("x-wc-webhook-topic"));
     
-    // Invalidate the cache
-    await invalidateHomepageCategories();
-    console.log("Invalidated homepage categories cache");
-    
-    return json({ success: true });
+    try {
+      // Invalidate the cache
+      await invalidateHomepageCategories();
+      console.log("Invalidated homepage categories cache");
+      
+      return json({ success: true });
+    } catch (invalidationError) {
+      console.error("Cache invalidation error:", invalidationError);
+      // Return a 200 status to prevent WooCommerce from retrying
+      return json({ 
+        status: "warning", 
+        message: "Authentication successful but cache invalidation failed",
+        error: String(invalidationError)
+      }, { status: 200 });
+    }
   } catch (error) {
     console.error("Webhook handler error:", error);
     // Always return 200 so WooCommerce doesn't retry
