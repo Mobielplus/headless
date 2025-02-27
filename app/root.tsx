@@ -8,7 +8,6 @@ import {
 } from "@remix-run/react";
 import { Header, links as headerLinks } from "~/components/Header/Header";
 import { useIOSZoomPrevention } from "~/hooks/useIOSZoomPrevention";
-
 // Import global styles
 import globalStyles from "./styles/global.css?url";
 import variables from "./styles/variables.css?url";
@@ -35,13 +34,12 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: variables },
   { rel: "stylesheet", href: icons },
   { rel: "stylesheet", href: fontStyles }, // Add your custom font styles
+  { rel: "icon", type: "image/svg+xml", href: "/favicon/favicon.svg" },
   ...headerLinks(), // Load styles specific to Header
-  // Remove Google Fonts links
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useIOSZoomPrevention();
-
   return (
     <html lang="nl">
       <head>
