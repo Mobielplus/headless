@@ -5,9 +5,6 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     console.log("Debug webhook called at:", new Date().toISOString());
     
-    // Clone the request to get both the raw body and headers
-    const clonedRequest = request.clone();
-    
     // Log all headers for debugging
     const headers: Record<string, string> = {};
     request.headers.forEach((value, key) => {
@@ -15,42 +12,48 @@ export const action: ActionFunction = async ({ request }) => {
       console.log(`Header ${key}: ${value}`);
     });
     
-    // Get and log the raw body
-    const rawBody = await clonedRequest.text();
+    // Get the raw body
+    const rawBody = await request.text();
     console.log("Raw body:", rawBody);
     
+    // Try to parse the body
     let bodyContent;
-    
     try {
-      // Try to parse as JSON
+      // First try JSON parsing
       bodyContent = JSON.parse(rawBody);
       console.log("Parsed JSON body:", JSON.stringify(bodyContent, null, 2));
-    } catch (e) {
-      // If not JSON, just use the raw text
-      bodyContent = { rawText: rawBody };
-      console.log("Non-JSON body received");
+    } catch {
+      // If not JSON, try URL-encoded parsing
+      try {
+        bodyContent = Object.fromEntries(new URLSearchParams(rawBody));
+        console.log("Parsed URL-encoded body:", JSON.stringify(bodyContent, null, 2));
+      } catch {
+        // If all parsing fails, use raw text
+        bodyContent = { rawText: rawBody };
+        console.log("Unparseable body received");
+      }
     }
     
-    // Log environment variables
-    console.log("CATEGORY_ARCHIVE_WEBHOOK_SECRET:", process.env.CATEGORY_ARCHIVE_WEBHOOK_SECRET ? "[PRESENT]" : "[MISSING]");
-    console.log("HOMEPAGE_WEBHOOK_SECRET:", process.env.HOMEPAGE_WEBHOOK_SECRET ? "[PRESENT]" : "[MISSING]");
+    // Compute signatures for debugging
+    console.log("Available signature verification methods:");
+    console.log("- WooCommerce Signature Header:", request.headers.get("x-wc-webhook-signature"));
+    console.log("- Vercel Proxy Signature:", request.headers.get("x-vercel-proxy-signature"));
+    
+    // Debug environment variables
+    console.log("Environment Variables:");
+    console.log("WEBHOOK_SECRET:", process.env.WEBHOOK_SECRET ? "[PRESENT]" : "[MISSING]");
     
     const debugInfo = {
-      message: "Debug information",
+      timestamp: new Date().toISOString(),
       headers: headers,
       body: bodyContent,
       method: request.method,
-      url: request.url,
-      // Include environment variables (redacted)
-      env: {
-        CATEGORY_ARCHIVE_WEBHOOK_SECRET: process.env.CATEGORY_ARCHIVE_WEBHOOK_SECRET ? "[PRESENT]" : "[MISSING]",
-        HOMEPAGE_WEBHOOK_SECRET: process.env.HOMEPAGE_WEBHOOK_SECRET ? "[PRESENT]" : "[MISSING]"
-      }
+      url: request.url
     };
     
-    console.log("Returning debug info:", JSON.stringify(debugInfo, null, 2));
+    console.log("Full debug info:", JSON.stringify(debugInfo, null, 2));
     
-    // Return all the debug information
+    // Return debug information
     return json(debugInfo, { status: 200 });
   } catch (error) {
     console.error("Debug webhook error:", error);
@@ -58,6 +61,6 @@ export const action: ActionFunction = async ({ request }) => {
       status: "error", 
       message: "Error in debug webhook handler",
       error: String(error)
-    }, { status: 200 });
+    }, { status: 500 });
   }
 };
