@@ -20,18 +20,29 @@ export const action: ActionFunction = async ({ request }) => {
       return json({ error: "Unauthorized" }, { status: 401 });
     }
     
+    // Log the raw body for debugging
+    console.log("Raw body for signature (first 100 chars):", rawBody.substring(0, 100));
+    console.log("Raw body length:", rawBody.length);
+    
     // Compute expected signature (HMAC with SHA-256)
     const expectedSignature = crypto
       .createHmac('sha256', SECRET_KEY)
       .update(rawBody)
       .digest('base64');
     
+    // Try alternative encoding methods in case WooCommerce is using a different encoding
+    const expectedSignatureUtf8 = crypto
+      .createHmac('sha256', SECRET_KEY)
+      .update(Buffer.from(rawBody, 'utf8'))
+      .digest('base64');
+      
     // Log signatures for debugging
     console.log("Received signature:", signature);
-    console.log("Expected signature:", expectedSignature);
+    console.log("Expected signature (default):", expectedSignature);
+    console.log("Expected signature (utf8 buffer):", expectedSignatureUtf8);
     
-    // Compare signatures
-    if (signature !== expectedSignature) {
+    // Compare signatures (use a timing-safe comparison if possible)
+    if (signature !== expectedSignature && signature !== expectedSignatureUtf8) {
       console.error("Invalid signature. Authentication failed.");
       return json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -42,6 +53,10 @@ export const action: ActionFunction = async ({ request }) => {
     console.log("Webhook topic:", request.headers.get("x-wc-webhook-topic"));
     
     try {
+      // Parse the request body as JSON
+      const payload = JSON.parse(rawBody);
+      console.log("Processing webhook payload for:", payload.name || "unknown category");
+      
       // Invalidate the cache
       await invalidateHomepageCategories();
       console.log("Invalidated homepage categories cache");
