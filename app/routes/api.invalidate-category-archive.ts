@@ -10,7 +10,7 @@ export const action: ActionFunction = async ({ request }) => {
     
     // Get the signature from headers
     const signature = request.headers.get("x-wc-webhook-signature");
-    const SECRET_KEY = process.env.CATEGORY_ARCHIVE_WEBHOOK_SECRET;
+    const SECRET_KEY = process.env.WEBHOOK_SECRET;
     
     if (!signature || !SECRET_KEY) {
       console.error("Missing signature or secret key");
