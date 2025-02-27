@@ -8,75 +8,148 @@ export const action: ActionFunction = async ({ request }) => {
     // Get the raw body for signature verification
     const rawBody = await request.text();
     
-    // Get the signature from headers
-    const signature = request.headers.get("x-wc-webhook-signature");
-    // Use the shared webhook secret
+    // Get all possible signature headers
+    const wcWebhookSignature = request.headers.get("x-wc-webhook-signature");
+    const vercelProxySignature = request.headers.get("x-vercel-proxy-signature")?.replace('Bearer ', '');
     const SECRET_KEY = process.env.WEBHOOK_SECRET;
     
-    if (!signature || !SECRET_KEY) {
-      console.error("Missing signature or secret key");
-      console.error("WEBHOOK_SECRET environment variable present:", !!process.env.WEBHOOK_SECRET);
-      console.error("Received headers:", JSON.stringify(Object.fromEntries([...request.headers.entries()]), null, 2));
-      return json({ error: "Unauthorized" }, { status: 401 });
+    // Validate presence of signature and secret
+    if (!SECRET_KEY) {
+      console.error("WEBHOOK_SECRET is missing");
+      return json({ error: "Unauthorized - No secret key" }, { status: 401 });
     }
     
-    // Log the raw body for debugging
-    console.log("Raw body for signature (first 100 chars):", rawBody.substring(0, 100));
-    console.log("Raw body length:", rawBody.length);
+    // Detailed signature verification methods with logging
+    const signatureVerificationMethods = [
+      {
+        name: "Standard Base64",
+        method: () => crypto
+          .createHmac('sha256', SECRET_KEY)
+          .update(rawBody)
+          .digest('base64'),
+        logDetails: () => `Raw body length: ${rawBody.length}, First 50 chars: ${rawBody.substring(0, 50)}`
+      },
+      {
+        name: "UTF-8 Buffer Base64",
+        method: () => crypto
+          .createHmac('sha256', SECRET_KEY)
+          .update(Buffer.from(rawBody, 'utf8'))
+          .digest('base64'),
+        logDetails: () => `Raw body UTF-8 buffer, length: ${Buffer.from(rawBody, 'utf8').length}`
+      },
+      {
+        name: "Hex Digest",
+        method: () => crypto
+          .createHmac('sha256', SECRET_KEY)
+          .update(rawBody)
+          .digest('hex'),
+        logDetails: () => `Hex digest method`
+      }
+    ];
     
-    // Compute expected signature (HMAC with SHA-256)
-    const expectedSignature = crypto
-      .createHmac('sha256', SECRET_KEY)
-      .update(rawBody)
-      .digest('base64');
+    // Signature verification tracking
+    const verificationAttempts: any[] = [];
     
-    // Try alternative encoding methods in case WooCommerce is using a different encoding
-    const expectedSignatureUtf8 = crypto
-      .createHmac('sha256', SECRET_KEY)
-      .update(Buffer.from(rawBody, 'utf8'))
-      .digest('base64');
+    // Check WooCommerce webhook signature
+    if (wcWebhookSignature) {
+      console.log("Attempting signature verification for WooCommerce webhook");
       
-    // Log signatures for debugging
-    console.log("Received signature:", signature);
-    console.log("Expected signature (default):", expectedSignature);
-    console.log("Expected signature (utf8 buffer):", expectedSignatureUtf8);
-    
-    // Compare signatures (use a timing-safe comparison if possible)
-    if (signature !== expectedSignature && signature !== expectedSignatureUtf8) {
-      console.error("Invalid signature. Authentication failed.");
-      return json({ error: "Unauthorized" }, { status: 401 });
+      for (const sigMethod of signatureVerificationMethods) {
+        try {
+          const expectedSignature = sigMethod.method();
+          
+          console.log(`Trying ${sigMethod.name} method:`, {
+            receivedSignature: wcWebhookSignature,
+            expectedSignature,
+            additionalDetails: sigMethod.logDetails()
+          });
+          
+          const isMatch = crypto.timingSafeEqual(
+            Buffer.from(wcWebhookSignature),
+            Buffer.from(expectedSignature)
+          );
+          
+          verificationAttempts.push({
+            method: sigMethod.name,
+            match: isMatch,
+            receivedSignature: wcWebhookSignature,
+            expectedSignature
+          });
+          
+          if (isMatch) {
+            console.log(`✅ Signature verified using ${sigMethod.name} method`);
+            break;
+          }
+        } catch (verificationError) {
+          console.error(`Error in ${sigMethod.name} verification:`, verificationError);
+          verificationAttempts.push({
+            method: sigMethod.name,
+            error: String(verificationError)
+          });
+        }
+      }
     }
     
-    // Log webhook details
-    console.log("Webhook event:", request.headers.get("x-wc-webhook-event"));
-    console.log("Webhook resource:", request.headers.get("x-wc-webhook-resource"));
-    console.log("Webhook topic:", request.headers.get("x-wc-webhook-topic"));
+    // Log detailed verification attempts
+    console.log("Signature Verification Attempts:", JSON.stringify(verificationAttempts, null, 2));
+    
+    // Check if any method succeeded
+    const isSignatureValid = verificationAttempts.some(attempt => attempt.match === true);
+    
+    // If signature is invalid, return unauthorized
+    if (!isSignatureValid) {
+      console.error("Signature verification failed", {
+        attempts: verificationAttempts,
+        receivedSignature: wcWebhookSignature
+      });
+      return json({ 
+        error: "Unauthorized - Invalid signature",
+        verificationAttempts 
+      }, { status: 401 });
+    }
+    
+    // Log webhook details for debugging
+    console.log("Webhook headers:", {
+      event: request.headers.get("x-wc-webhook-event"),
+      resource: request.headers.get("x-wc-webhook-resource"),
+      topic: request.headers.get("x-wc-webhook-topic")
+    });
     
     try {
       // Parse the request body as JSON
       const payload = JSON.parse(rawBody);
-      console.log("Processing webhook payload for:", payload.name || "unknown category");
+      console.log("Processing webhook payload:", {
+        payloadType: payload.type || 'unknown',
+        payloadName: payload.name || 'unnamed'
+      });
       
-      // Invalidate the cache
+      // Invalidate homepage categories cache
       await invalidateHomepageCategories();
-      console.log("Invalidated homepage categories cache");
+      console.log("Successfully invalidated homepage categories cache");
       
-      return json({ success: true });
+      return json({ 
+        success: true,
+        message: "Homepage categories cache invalidated",
+        verificationAttempts
+      });
     } catch (invalidationError) {
       console.error("Cache invalidation error:", invalidationError);
-      // Return a 200 status to prevent WooCommerce from retrying
+      
+      // Return 200 to prevent WooCommerce from retrying
       return json({ 
         status: "warning", 
         message: "Authentication successful but cache invalidation failed",
-        error: String(invalidationError)
+        error: String(invalidationError),
+        verificationAttempts
       }, { status: 200 });
     }
   } catch (error) {
-    console.error("Webhook handler error:", error);
-    // Always return 200 so WooCommerce doesn't retry
+    console.error("Webhook handler fatal error:", error);
+    
+    // Always return 200 to prevent retries
     return json({ 
       status: "error", 
-      message: "Error in webhook handler",
+      message: "Fatal error in webhook handler",
       error: String(error)
     }, { status: 200 });
   }
