@@ -10,10 +10,12 @@ export const action: ActionFunction = async ({ request }) => {
     
     // Get the signature from headers
     const signature = request.headers.get("x-wc-webhook-signature");
+    // Use the shared webhook secret
     const SECRET_KEY = process.env.WEBHOOK_SECRET;
     
     if (!signature || !SECRET_KEY) {
       console.error("Missing signature or secret key");
+      console.error("WEBHOOK_SECRET environment variable present:", !!process.env.WEBHOOK_SECRET);
       console.error("Received headers:", JSON.stringify(Object.fromEntries([...request.headers.entries()]), null, 2));
       return json({ error: "Unauthorized" }, { status: 401 });
     }
