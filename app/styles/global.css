@@ -31,10 +31,16 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2rem;
 }
 
 @media (max-width: 1000px) {
     .page-wrapper {
         padding: 1rem 0;
     }
+}
+
+.section-title {
+    color: var(--font-color-primary);
+    font-size: 1.25rem;
 }

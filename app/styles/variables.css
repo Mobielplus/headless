@@ -3,9 +3,13 @@
     --primary-blue: #0077FF;
     --primary-blue-light: #D8EAFF;
     --primary-blue-dark: #0061cc;
+    --global-green: #35B54C;
     --light-grey: #E2E2E2;
     --light-grey-secondary: #F5F5F5;
+    --light-grey-text: #ABABAB;
     --font-color-primary: #515151;
     --font-color-secondary: #fff;
     --font-primary: 'Montserrat', sans-serif;
+    --small-text-size: 0.8rem;
+    --small-text-weight: 500;
 }

@@ -1,0 +1,137 @@
+/* app/components/FeaturedDealsSection/FeaturedDealsSection.css */
+.deals-wrapper {
+    width: 100%;
+    padding: 0 1rem;
+  }
+  
+  .deals-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 1120px;
+    margin: auto;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--font-color-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .deals-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .deals-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .deal-card {
+    position: relative;
+    min-width: 200px;
+    flex: 1;
+    border-radius: 0.8rem;
+    border: 1px solid var(--light-grey);
+    overflow: hidden;
+    text-decoration: none;
+    background-color: white;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: center;
+  }
+  
+  .bestseller-badge {
+    position: absolute;
+    background-color: var(--primary-blue-light);
+    color: var(--primary-blue);
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .product-image {
+    width: 80%;
+    height: auto;
+    margin: 1rem auto;
+    object-fit: contain;
+  }
+  
+  .product-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  
+  .product-title {
+    font-size: var(--small-text-size);
+    font-weight: 700;
+    color: var(--font-color-primary);
+    margin-bottom: 0.75rem;
+    min-height: 2.5rem;
+  }
+
+  .deal-card:hover .product-title {
+    text-decoration: underline;
+  }
+  
+  .price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .regular-price {
+    color: var(--light-grey-text);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    gap: 0.2rem;
+  }
+
+  .regular-price i {
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+    display: flex;
+  }
+
+  
+  .regular-price i:hover {
+    background-color: var(--light-grey);
+  }
+  
+  .sale-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--font-color-primary);
+  }
+  
+  .stock-status {
+    margin-top: 0.5rem;
+  }
+  
+  .in-stock {
+    color: var(--global-green);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .deal-card {
+      min-width: 60vw;
+    }
+  }

@@ -18,7 +18,9 @@
 .Stars-icon,
 .Star-icon,
 .Burger-menu-icon,
-.Truck-icon {
+.Truck-icon,
+.Checkmark-icon,
+.Info-icon {
   font-family: 'Mobielplus' !important;
   font-style: normal;
   font-weight: normal;
@@ -49,4 +51,10 @@
 }
 .Burger-menu-icon::before {
   content: "\e901";
+}
+.Checkmark-icon::before {
+  content: "\e907";
+}
+.Info-icon::before {
+  content: "\e908";
 }

@@ -2,20 +2,30 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getHomepageCategories, type ProductCategory } from "~/lib/graphql";
-import { CategoryCard, links as categoryCardLinks } from "~/components/CategoryCard/CategoryCard";
+import { getHomepageCategories, type ProductCategory } from "~/lib/graphql/categories";
+import { getHomepageBrands, type ProductBrand } from "~/lib/graphql/brands";
+import { getFeaturedProducts, type FeaturedProduct } from "~/lib/graphql/products";
+import { links as categoryCardLinks, CategorySection } from "~/components/CategoryCard/CategoryCard";
+import { links as brandCardLinks, BrandSection } from "~/components/BrandCard/BrandCard";
 import HomepageBanner, { links as homepageBannerLinks } from "~/components/HomepageBanner/HomepageBanner";
+import { FeaturedDealsSection, links as featuredDealsSectionLinks } from "~/components/FeaturedDealsSection/FeaturedDealsSection";
 
 interface LoaderData {
   categories: ProductCategory[];
+  brands: ProductBrand[];
+  featuredProducts: FeaturedProduct[];
 }
 
 export const loader: LoaderFunction = async () => {
   try {
-    const categories = await getHomepageCategories();
+    const [categories, brands, featuredProducts] = await Promise.all([
+      getHomepageCategories(),
+      getHomepageBrands(),
+      getFeaturedProducts()
+    ]);
     
     return json<LoaderData>(
-      { categories },
+      { categories, brands, featuredProducts },
       {
         headers: {
           // ISR-like pattern:
@@ -27,35 +37,34 @@ export const loader: LoaderFunction = async () => {
       }
     );
   } catch (error) {
-    return json<LoaderData>({ categories: [] });
+    console.error("Error loading homepage data:", error);
+    return json<LoaderData>({ categories: [], brands: [], featuredProducts: [] });
   }
 };
 
 export const links = () => [
   ...categoryCardLinks(),
-  ...homepageBannerLinks()
+  ...brandCardLinks(),
+  ...homepageBannerLinks(),
+  ...featuredDealsSectionLinks()
 ];
 
 export default function Index() {
-  const { categories } = useLoaderData<LoaderData>();
+  const { categories, brands, featuredProducts } = useLoaderData<LoaderData>();
 
   return (
     <div className="page-wrapper">
-      {/* HomepageBanner positioned above the categories */}
-      <div className="banner-wrapper">
-        <HomepageBanner />
-      </div>
+      {/* Homepage Banner */}
+      <HomepageBanner />
       
-      <div className="categories-wrapper">
-        <section className="categories-section">
-          <h2 className="section-title">Kies een categorie</h2>
-          <div className="categories-container">
-            {categories.map((category) => (
-              <CategoryCard key={category.name} category={category} />
-            ))}
-          </div>
-        </section>
-      </div>
+      {/* Categories Section */}
+      <CategorySection categories={categories} />
+      
+      {/* Brands Section */}
+      <BrandSection brands={brands} />
+
+      {/* Featured Products Section */}
+      <FeaturedDealsSection products={featuredProducts} />
     </div>
   );
 }

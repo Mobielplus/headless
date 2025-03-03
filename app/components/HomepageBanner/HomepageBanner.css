@@ -18,8 +18,8 @@
 
 .banner-subtitle {
   color: var(--font-color-primary);
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: var(--small-text-size);
+  font-weight: var(--small-text-weight);
 }
 
 .banner-button {

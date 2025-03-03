@@ -2,7 +2,8 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getProductsByCategory, type Product } from "~/lib/graphql";
+import { getProductsByCategory } from "~/lib/graphql/categories";
+import type { Product } from "~/lib/graphql/products";
 import { ProductCard, links as productCardLinks } from "~/components/ProductCard/ProductCard";
 import styles from "~/styles/category.css?url";
 

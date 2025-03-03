@@ -1,10 +1,10 @@
-/* app/components/CategoryCard/CategoryCard.css */
-.categories-wrapper {
+/* app/components/BrandCard/BrandCard.css */
+.brands-wrapper {
   width: 100%;
   padding: 0 1rem;
 }
-
-.categories-section {
+  
+.brands-section {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -13,7 +13,7 @@
   margin: auto;
 }
 
-.categories-container {
+.brands-container {
   display: flex;
   justify-content: space-between;
   gap: 15px;
@@ -24,11 +24,11 @@
   -ms-overflow-style: none;
 }
 
-.categories-container::-webkit-scrollbar {
+.brands-container::-webkit-scrollbar {
   display: none;
 }
 
-.category-card {
+.brand-card {
   width: 100%;
   min-width: 150px;
   scroll-snap-align: center;
@@ -40,24 +40,40 @@
   border-radius: 0.8rem;
   border: 1px solid var(--light-grey);
   overflow: hidden;
-  text-decoration: none; /* Added to remove link underline */
+  text-decoration: none;
 }
 
-.category-image {
-  width: 60%;
+.brand-image {
+  width: 80%;
   padding: 20px 0;
 }
 
-.category-content {
+.brand-content {
   background-color: #fff;
-  padding: 15px;
+  padding: 1.25rem;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--font-color-primary);
+  gap: 0.5rem;
+  flex-grow: 1;
 }
 
-.category-title {
-  text-align: center;
+.brand-content .description {
   font-size: var(--small-text-size);
   font-weight: var(--small-text-weight);
-  color: var(--font-color-primary);
+  text-align: justify;
 }
 
+.brand-title {
+  text-align: center;
+  font-size: 1rem; 
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .brand-card {
+    min-width: 80vw;
+  }
+}
